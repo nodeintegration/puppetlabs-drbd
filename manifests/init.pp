@@ -5,23 +5,26 @@
 # by an example created by Rackspace's cloudbuilders
 #
 class drbd(
-  $service_enable = true
-) {
+  $service_enable = true,
+  $utils_package  = $drbd::params::utils_package,
+  $kmod_package   = $drbd::params::kmod_package,
+) inherits drbd::params {
+
   include drbd::service
 
-  package { $::drbd::params::utils_package:
+  package { $utils_package:
     ensure => present,
     alias  => 'drbd-utils',
   }
   # Some distributions do not have drbd in mainline kernel (Redhat for example)
   #  and require a kernel module package
-  #if $drbd::params::kmod_package {
-  #  package { $drbd::params::kmod_package:
-  #    ensure => present,
-  #    alias  => 'kmod-drbd',
-  #    before => Package['drbd-utils'],
-  #  }
-  #}
+  if $kmod_package {
+    package { $kmod_package:
+      ensure => present,
+      alias  => 'kmod-drbd',
+      before => Package['drbd-utils'],
+    }
+  }
 
   # ensure that the kernel module is loaded
   exec { 'modprobe drbd':
