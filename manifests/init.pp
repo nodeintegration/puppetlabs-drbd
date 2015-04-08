@@ -15,13 +15,13 @@ class drbd(
   }
   # Some distributions do not have drbd in mainline kernel (Redhat for example)
   #  and require a kernel module package
-  if $drbd::params::kmod_package {
-    package { $drbd::params::kmod_package:
-      ensure => present,
-      alias  => 'kmod-drbd',
-      before => Package['drbd-utils'],
-    }
-  }
+  #if $drbd::params::kmod_package {
+  #  package { $drbd::params::kmod_package:
+  #    ensure => present,
+  #    alias  => 'kmod-drbd',
+  #    before => Package['drbd-utils'],
+  #  }
+  #}
 
   # ensure that the kernel module is loaded
   exec { 'modprobe drbd':
