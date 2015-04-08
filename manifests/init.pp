@@ -9,7 +9,7 @@ class drbd(
 ) {
   include drbd::service
 
-  package { $drbd::params::utils_package:
+  package { $::drbd::params::utils_package:
     ensure => present,
     alias  => 'drbd-utils',
   }
