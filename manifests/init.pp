@@ -9,9 +9,18 @@ class drbd(
 ) {
   include drbd::service
 
-  package { 'drbd':
+  package { 'drbd-utils':
     ensure => present,
-    name   => 'drbd8-utils',
+    name   => $drbd::params::utils_package,
+  }
+  # Some distributions do not have drbd in mainline kernel (Redhat for example)
+  #  and require a kernel module package
+  if $drbd::params::kmod_package {
+    package { 'kmod-drbd':
+      ensure => present,
+      name   => $drbd::params::kmod_package,
+      before => Package['drbd-utils'],
+    }
   }
 
   # ensure that the kernel module is loaded
@@ -24,7 +33,7 @@ class drbd(
     mode    => '0644',
     owner   => 'root',
     group   => 'root',
-    require => Package['drbd'],
+    require => Package['drbd-utils'],
     notify  => Class['drbd::service'],
   }
 
@@ -48,7 +57,7 @@ class drbd(
     purge   => true,
     recurse => true,
     force   => true,
-    require => Package['drbd'],
+    require => Package['drbd-utils'],
   }
 
 #  exec { "fix_drbd_runlevel":

@@ -70,7 +70,7 @@ define drbd::resource (
   concat { "/etc/drbd.d/${name}.res":
     mode    => '0600',
     require => [
-      Package['drbd'],
+      Package['drbd-utils'],
       File['/etc/drbd.d'],
     ],
     notify  => Class['drbd::service'],
