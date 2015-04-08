@@ -9,16 +9,16 @@ class drbd(
 ) {
   include drbd::service
 
-  package { 'drbd-utils':
+  package { $drbd::params::utils_package:
     ensure => present,
-    name   => $drbd::params::utils_package,
+    alias  => 'drbd-utils',
   }
   # Some distributions do not have drbd in mainline kernel (Redhat for example)
   #  and require a kernel module package
   if $drbd::params::kmod_package {
-    package { 'kmod-drbd':
+    package { $drbd::params::kmod_package:
       ensure => present,
-      name   => $drbd::params::kmod_package,
+      alias  => 'kmod-drbd',
       before => Package['drbd-utils'],
     }
   }
