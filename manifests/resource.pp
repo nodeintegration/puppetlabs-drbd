@@ -2,6 +2,8 @@
 # between 2 hosts for HA.
 #
 # == Parameters
+#  [cluster] collect nodes using exported resources
+#  [ha_primary] If the resource is being applied on the primary host.
 #  [host1] Name of first host. Required unless $cluster is set.
 #  [host2] Name of second host. Required unless $cluster is set.
 #  [ip1] Ipaddress of first host. Required unless $cluster or $res1/$res2 is set.
@@ -19,7 +21,6 @@
 #  [verify_alg] Algorithm used for block validation on peers. Optional.
 #    Defaults to crc32c. Accepts crc32c, sha1, or md5.
 #  [manage] If the actual drbd resource shoudl be managed.
-#  [ha_primary] If the resource is being applied on the primary host.
 #  [initial_setup] If this run is associated with the initial setup. Allows a user
 #    to only perform dangerous setup on the initial run.
 define drbd::resource (
