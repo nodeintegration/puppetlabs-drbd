@@ -8,19 +8,20 @@ define drbd::resource::up (
   $mountpoint,
   $automount,
 ) {
+
   # create metadata on device, except if resource seems already initalized.
-  # drbd is very tenacious about asking for aproval if there is data on the
+  # drbd is very tenacious about asking for approval if there is data on the
   # volume already.
   exec { "initialize DRBD metadata for ${name}":
-    command => "yes yes | drbdadm create-md ${name}",
+    command => "drbdadm create-md ${name}",
     onlyif  => "test -e ${disk}",
-    unless  => "drbdadm dump-md ${name} || (drbdadm cstate ${name} | egrep -q '^(Sync|Connected|WFConnection|StandAlone|Verify)')",
+    unless  => "drbdadm cstate ${name} | grep -E '^(Sync|Connected|WFConnection|StandAlone|Verify)'",
     before  => Service['drbd'],
     require => [
       Exec['modprobe drbd'],
       File["/etc/drbd.d/${name}.res"],
-      ],
-      notify  => Service['drbd']
+    ],
+    notify  => Service['drbd']
   }
 
   exec { "enable DRBD resource ${name}":
@@ -30,8 +31,8 @@ define drbd::resource::up (
     require => [
       Exec["initialize DRBD metadata for ${name}"],
       Exec['modprobe drbd']
-      ],
-      notify  => Service['drbd']
+    ],
+    notify  => Service['drbd']
   }
 
 
