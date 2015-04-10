@@ -24,30 +24,31 @@
 #  [initial_setup] If this run is associated with the initial setup. Allows a user
 #    to only perform dangerous setup on the initial run.
 define drbd::resource (
-  $host1          = undef,
-  $host2          = undef,
-  $ip1            = undef,
-  $ip2            = undef,
-  $res1           = undef,
-  $res2           = undef,
-  $cluster        = undef,
+  $host1             = undef,
+  $host2             = undef,
+  $ip1               = undef,
+  $ip2               = undef,
+  $res1              = undef,
+  $res2              = undef,
+  $cluster           = undef,
   $disk,
-  $secret         = false,
-  $port           = '7789',
-  $device         = '/dev/drbd0',
-  $mountpoint     = "/drbd/${name}",
-  $automount      = true,
-  $owner          = 'root',
-  $group          = 'root',
-  $protocol       = 'C',
-  $verify_alg     = 'crc32c',
-  $rate           = false,
-  $net_parameters = false,
-  $manage         = true,
-  $ha_primary     = false,
-  $initial_setup  = false,
-  $fs_type        = 'ext4',
-  $mkfs_opts      = ''
+  $secret            = false,
+  $port              = '7789',
+  $device            = '/dev/drbd0',
+  $manage_mountpoint = true,
+  $mountpoint        = "/drbd/${name}",
+  $automount         = true,
+  $owner             = 'root',
+  $group             = 'root',
+  $protocol          = 'C',
+  $verify_alg        = 'crc32c',
+  $rate              = false,
+  $net_parameters    = false,
+  $manage            = true,
+  $ha_primary        = false,
+  $initial_setup     = false,
+  $fs_type           = 'ext4',
+  $mkfs_opts         = ''
 ) {
   include drbd
 
@@ -61,11 +62,13 @@ define drbd::resource (
     group => 'root',
   }
 
-  file { $mountpoint:
-    ensure => directory,
-    mode   => '0755',
-    owner  => $owner,
-    group  => $group,
+  if ($manage_mountpoint) {
+    file { $mountpoint:
+      ensure => directory,
+      mode   => '0755',
+      owner  => $owner,
+      group  => $group,
+    }
   }
 
   concat { "/etc/drbd.d/${name}.res":
