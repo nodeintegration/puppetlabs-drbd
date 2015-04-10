@@ -28,8 +28,9 @@ class drbd(
 
   # ensure that the kernel module is loaded
   exec { 'modprobe drbd':
-    path   => ['/bin/', '/sbin/'],
-    unless => 'grep -qe \'^drbd \' /proc/modules',
+    path    => ['/bin/', '/sbin/'],
+    unless  => 'grep -qe \'^drbd \' /proc/modules',
+    require => Package['drbd-utils'], # This is incase we need a kmod package which is run before the utils package if needed
   }
 
   File {
@@ -38,10 +39,6 @@ class drbd(
     group   => 'root',
     require => Package['drbd-utils'],
     notify  => Class['drbd::service'],
-  }
-
-  file { '/drbd':
-    ensure => directory,
   }
 
   # this file just includes other files
