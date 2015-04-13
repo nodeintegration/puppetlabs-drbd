@@ -139,7 +139,7 @@ define drbd::resource (
 
   if $cluster {
     # Import cluster nodes
-    Concat::Fragment <<| title == "${name} ${cluster} resource" |>>
+    Concat::Fragment <<| tag == "${name} ${cluster} resource" |>>
   }
 
   # Due to a bug in puppet, defined() conditionals must be in a defined
