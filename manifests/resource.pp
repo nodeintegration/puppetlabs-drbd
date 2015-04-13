@@ -103,7 +103,7 @@ define drbd::resource (
       target  => "/etc/drbd.d/${name}.res",
       content => template('drbd/resource.res.erb'),
       order   => '10',
-      tag     => "${name} ${cluster} resource",
+      tag     => ["${name} ${cluster} resource"],
     }
   } elsif $host1 and $ip1 and $host2 and $ip2 {
     concat::fragment { "${name} static primary resource":
