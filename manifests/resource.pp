@@ -103,7 +103,7 @@ define drbd::resource (
       target  => "/etc/drbd.d/${name}.res",
       content => template('drbd/resource.res.erb'),
       order   => '10',
-      tag     => ["${name} ${cluster} resource"],
+      tag     => ["${name}_${cluster}_resource"],
     }
   } elsif $host1 and $ip1 and $host2 and $ip2 {
     concat::fragment { "${name} static primary resource":
@@ -139,7 +139,7 @@ define drbd::resource (
 
   if $cluster {
     # Import cluster nodes
-    Concat::Fragment <<| tag == "${name} ${cluster} resource" |>>
+    Concat::Fragment <<| tag == "${name}_${cluster}_resource" |>>
   }
 
   # Due to a bug in puppet, defined() conditionals must be in a defined
