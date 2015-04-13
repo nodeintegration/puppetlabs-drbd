@@ -32,6 +32,7 @@ define drbd::resource (
   $res2              = undef,
   $cluster           = undef,
   $disk,
+  $resource          = $name,
   $secret            = false,
   $port              = '7789',
   $device            = '/dev/drbd0',
@@ -97,17 +98,11 @@ define drbd::resource (
     order   => '01',
   }
   # Export our fragment for the clustered node
-  if $ha_primary and $cluster {
-    @@concat::fragment { "${name} ${cluster} primary resource":
+  if $cluster {
+    @@concat::fragment { "${name} ${fqdn} ${cluster} resource":
       target  => "/etc/drbd.d/${name}.res",
       content => template('drbd/resource.res.erb'),
       order   => '10',
-    }
-  } elsif $cluster {
-    @@concat::fragment { "${name} ${cluster} secondary resource":
-      target  => "/etc/drbd.d/${name}.res",
-      content => template('drbd/resource.res.erb'),
-      order   => '20',
     }
   } elsif $host1 and $ip1 and $host2 and $ip2 {
     concat::fragment { "${name} static primary resource":
