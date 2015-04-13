@@ -99,7 +99,7 @@ define drbd::resource (
   }
   # Export our fragment for the clustered node
   if $cluster {
-    @@concat::fragment { "${name} ${fqdn} ${cluster} resource":
+    @@concat::fragment { "${name} ${cluster} resource":
       target  => "/etc/drbd.d/${name}.res",
       content => template('drbd/resource.res.erb'),
       order   => '10',
@@ -138,8 +138,7 @@ define drbd::resource (
 
   if $cluster {
     # Import cluster nodes
-    Concat::Fragment <<| title == "${name} ${cluster} primary resource" |>>
-    Concat::Fragment <<| title == "${name} ${cluster} secondary resource" |>>
+    Concat::Fragment <<| title == "${name} ${cluster} resource" |>>
   }
 
   # Due to a bug in puppet, defined() conditionals must be in a defined
